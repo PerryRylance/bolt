@@ -9,8 +9,6 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -19,6 +17,7 @@ use LaraZeus\Bolt\Filament\Resources\CollectionResource\Pages\CreateCollection;
 use LaraZeus\Bolt\Filament\Resources\CollectionResource\Pages\EditCollection;
 use LaraZeus\Bolt\Filament\Resources\CollectionResource\Pages\ListCollections;
 use LaraZeus\Bolt\Filament\Resources\CollectionResource\Widgets\EditCollectionWarning;
+use LaraZeus\Bolt\Support\ClientSideSlug;
 
 class CollectionResource extends BoltResource
 {
@@ -79,12 +78,9 @@ class CollectionResource extends BoltResource
                     ->columns(1)
                     ->schema([
                         TextInput::make('itemValue')
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function (Set $set, Get $get, string $operation) {
-                                if ($operation === 'create') {
-                                    $set('itemKey', $get('itemValue'));
-                                }
-                            })
+                            ->extraInputAttributes(fn (string $operation) => $operation === 'create'
+                                ? ClientSideSlug::attributesForRepeaterMirror('itemKey')
+                                : [])
                             ->required()
                             ->label(__('zeus-bolt::collection.value'))
                             ->hint(__('zeus-bolt::collection.value_help')),

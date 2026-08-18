@@ -16,7 +16,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -26,12 +25,12 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 use LaraZeus\Bolt\BoltPlugin;
 use LaraZeus\Bolt\Filament\Resources\CategoryResource\Pages\CreateCategory;
 use LaraZeus\Bolt\Filament\Resources\CategoryResource\Pages\EditCategory;
 use LaraZeus\Bolt\Filament\Resources\CategoryResource\Pages\ListCategories;
 use LaraZeus\Bolt\Models\Category;
+use LaraZeus\Bolt\Support\ClientSideSlug;
 
 class CategoryResource extends BoltResource
 {
@@ -66,14 +65,10 @@ class CategoryResource extends BoltResource
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255)
-                            ->live(onBlur: true)
                             ->label(__('zeus-bolt::category.name'))
-                            ->afterStateUpdated(function (Set $set, $state, $context) {
-                                if ($context === 'edit') {
-                                    return;
-                                }
-                                $set('slug', Str::slug($state));
-                            }),
+                            ->extraInputAttributes(fn (string $context) => $context === 'edit'
+                                ? []
+                                : ClientSideSlug::attributesForSlug()),
                         TextInput::make('slug')
                             ->required()
                             ->maxLength(255)

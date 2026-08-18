@@ -49,7 +49,7 @@ class ClientSideSlug
                         return;
                     }
 
-                    const target = scope.querySelector('[id\$=".{$targetFieldName}"]');
+                    const target = scope.querySelector('[id\$=\'.{$targetFieldName}\']');
 
                     if (!target) {
                         return;

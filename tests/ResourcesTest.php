@@ -45,7 +45,7 @@ it('does not touch the category slug client side while editing', function () {
 it('mirrors the collection item value into the item key client side while creating', function () {
     livewire(CreateCollection::class)
         ->assertSuccessful()
-        ->assertSeeHtml('querySelector(\'[id$=\".itemKey\"]\')');
+        ->assertSeeHtml('querySelector(\'[id$=\\\'.itemKey\\\']\')');
 });
 
 it('does not mirror the collection item value client side while editing', function () {
@@ -56,5 +56,5 @@ it('does not mirror the collection item value client side while editing', functi
 
     livewire(EditCollection::class, ['record' => $collection->getRouteKey()])
         ->assertSuccessful()
-        ->assertDontSeeHtml('querySelector(\'[id$=\".itemKey\"]\')');
+        ->assertDontSeeHtml('querySelector(\'[id$=\\\'.itemKey\\\']\')');
 });
